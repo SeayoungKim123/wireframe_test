@@ -23,9 +23,14 @@ HTML 파일 **하나**에 와이어프레임 + 핀 설명 + 버전 기록을 모
 
 ## 2. 시작하기 (3단계, 1분)
 
-### Step 1 — 파일 복사
-`spec_template_base.html`을 복사해서 새 이름으로 저장.
-예: `reading_log.html`
+### Step 1 — 폴더 복사
+이 repo의 **`template/` 폴더를 통째로 복사**해서 새 위치에 두세요. 폴더 안에는 셋이 함께 들어있습니다:
+
+- `spec_template_base.html` — 본체 (이름만 `reading_log.html` 식으로 변경)
+- `shell.css` — 공용 스타일
+- `shell.js` — 공용 스크립트
+
+> ⚠ HTML이 같은 폴더의 `shell.css` / `shell.js`를 `<link>` / `<script src>` 로 참조합니다. 셋이 같은 폴더에 있어야 정상 동작합니다.
 
 ### Step 2 — 설정 2줄 수정
 에디터로 열고 `@ANCHOR:CONFIG` 검색. 블록 안 2줄만 고침:
@@ -63,7 +68,7 @@ const TEMPLATE_CONFIG = {
 
 > "`reading_log.html`에 회원가입 폼 추가해줘. `data-component="signup-form"` 붙여서."
 
-Claude는 `@ANCHOR:CONTENT` 영역만 수정하므로 공용 인프라(2000줄)는 건드리지 않습니다 → 토큰 절약.
+Claude는 `@ANCHOR:CONTENT` 영역만 수정하면 됩니다. 공용 인프라(CSS·JS)는 `shell.css` / `shell.js` 로 외부화되어 있어 HTML 본체는 ~270줄 수준 → 토큰·맥락 부담 최소.
 
 ---
 
@@ -216,9 +221,11 @@ URL 끝에 `?edit=1` 있는지 확인. 읽기용 공유 시엔 일부러 빼면 
 ```
 sample/<기획서명>/
 ├── index.html           ← 카탈로그 페이지 (버전 카드 리스트, JS 없음)
+├── shell.css            ← 공용 카메라 (CSS) — 모든 버전이 공유
+├── shell.js             ← 공용 카메라 (JS)  — 모든 버전이 공유
 └── versions/
     ├── manifest.json    ← 형제 버전 목록 (단일 진실 소스)
-    ├── v0.1.html        ← 자기 버전 1개만 보유
+    ├── v0.1.html        ← 자기 버전 1개만 보유, ../shell.css/.js 참조
     ├── v0.2.html
     └── ...
 ```
@@ -227,6 +234,7 @@ sample/<기획서명>/
 - `versions[]`에 자기 버전 1개만 (다른 버전 정보는 manifest로 관리)
 - `STORAGE_KEY`는 파일별로 분리 (예: `spec_reading_log_v0_1`, `spec_reading_log_v0_2`) → localStorage 충돌 방지
 - `PAGE_TITLE`에 버전 식별 (예: `독서 기록표 v0.2`)
+- `<link href="../shell.css">` 와 `<script src="../shell.js">` 로 한 단계 위 폴더의 셸 파일 참조
 
 ### `manifest.json` 형식
 
@@ -253,6 +261,8 @@ sample/<기획서명>/
 5. `index.html` 에 카드 한 개 끼워 넣기 (최신을 맨 위)
 6. `git commit && git push` → vercel 자동 재배포
 
+> 다운로드된 HTML은 **상대경로로 `../shell.css` / `../shell.js`를 참조**합니다. `versions/` 폴더 안에 두는 한 자동으로 동작합니다 (셸 파일은 한 번 셋업 후 손댈 일 없음).
+
 ### ⚠ 로컬 작업 시 서버 필요
 
 `manifest.json` fetch와 직전 버전 fetch는 `file://` 프로토콜에서 막힙니다. 로컬에서 미리 보려면 **로컬 서버**를 띄우세요:
@@ -275,4 +285,4 @@ Vercel에 올라간 파일에서 `?edit=1`로 편집해도 본인 브라우저 l
 
 - 템플릿 내부 구조 / 데이터 스키마: [template_spec.md](template_spec.md)
 - 편집 모드 설계 근거: [edit_mode_design.md](edit_mode_design.md)
-- 분리 모델 실제 예시: `sample/reading_log/`
+- 분리 모델 실제 예시: `../sample/reading_log/`

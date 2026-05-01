@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!--
+  ============================================================
+  화면 설계 템플릿 (Spec Wireframe Template)
+  ============================================================
+  사용법:
+  1. 이 파일을 복사해서 새 이름으로 저장하세요.
+  2. <script>의 TEMPLATE_CONFIG 블록만 수정하세요.
+     - PAGE_TITLE, VERSION_LABEL, STORAGE_KEY
+  3. <main class="main"> 안의 "기획서 콘텐츠 영역"에
+     실제 와이어프레임을 작성하세요.
+     - 핀을 달고 싶은 컴포넌트에 data-component="고유이름" 부여
+  4. 편집 모드로 열려면 URL에 ?edit=1 을 붙이세요.
+
+  저장 모델 (3단계):
+  - 자동 저장: localStorage (편집 중 안전망. 날아갈 수 있음)
+  - 💾 작업본 저장: HTML의 draft 슬롯 갱신 → 파일 다운로드
+  - 📌 버전 저장: HTML의 VERSIONS[] 에 새 버전 추가 → 파일 다운로드
+
+  자세한 설계는 edit_mode_design.md 참조.
+
+  ============================================================
+  편집 앵커 (AI 편집용 — grep으로 좁혀서 Edit)
+  ============================================================
+  전체 재작성 대신 아래 앵커로 범위를 좁히세요 (토큰 절약).
+    @ANCHOR:CONFIG   — TEMPLATE_CONFIG 블록 (페이지 타이틀 등)
+    @ANCHOR:CONTENT  — 기획서 와이어프레임 영역 (여기만 교체)
+    @ANCHOR:DATA     — 버전 데이터 JSON (브라우저 자동관리, 직접수정 금지)
+  사용 예: Grep("@ANCHOR:CONTENT:START") → Read(offset,limit) → Edit
+  ============================================================
+-->
+<title>화면 설계 템플릿</title>
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
+<link rel="stylesheet" href="shell.css">
+</head>
+<body>
+
+<!-- ============================================================
+     Template Control Bar (공용 — 수정하지 않음)
+     ============================================================ -->
+<div class="template-bar">
+  <span class="title" id="bar-title">📋 화면 설계</span>
+  <span class="edit-badge">편집 중</span>
+
+  <div class="toggle-group">
+    <span class="label">버전</span>
+    <div class="version-dropdown">
+      <button class="version-select empty" id="version-select">(버전 없음)</button>
+      <div class="version-menu" id="version-menu" style="display:none;"></div>
+    </div>
+  </div>
+
+  <div class="toggle-group">
+    <span class="label">🔀 비교</span>
+    <div class="toggle-switch compare disabled" id="compare-toggle"></div>
+  </div>
+
+  <span class="save-indicator saved" id="save-indicator"><span class="dot"></span>저장됨</span>
+
+  <div class="spacer"></div>
+
+  <div class="toggle-group" id="edit-toggle-group" style="display: none;">
+    <span class="label">편집 모드</span>
+    <div class="toggle-switch edit" id="edit-toggle"></div>
+  </div>
+</div>
+
+<div class="app">
+  <main class="main">
+    <div class="main-inner">
+
+      <!-- Compare mode summary bar (auto) -->
+      <div class="compare-summary" id="compare-summary">
+        <span class="icon">🔀</span>
+        <span id="compare-summary-text">비교 중…</span>
+      </div>
+
+      <!-- Read-only banner when viewing old version (auto) -->
+      <div class="readonly-banner" id="readonly-banner">
+        <span>👁️ 과거 버전을 보고 있습니다. 편집하려면 최신 버전으로 이동하세요.</span>
+        <button id="goto-latest-btn">최신으로 이동</button>
+      </div>
+
+      <!-- @ANCHOR:CONTENT:START =======================================
+           ⬇⬇⬇  기획서 콘텐츠 영역 (여기만 교체)  ⬇⬇⬇
+           - 핀을 달고 싶은 컴포넌트에 data-component="고유이름" 부여
+           - AI 편집 시: 이 앵커 사이만 수정. 바깥은 공용 인프라.
+           =========================================================== -->
+
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">페이지 제목</h1>
+          <p class="page-subtitle">페이지에 대한 간단한 설명.</p>
+        </div>
+      </div>
+
+      <div class="placeholder-area" data-component="example-placeholder">
+        <h2>여기에 와이어프레임을 작성하세요</h2>
+        <p>컴포넌트에 <code>data-component="고유이름"</code>을 달면 핀을 붙일 수 있습니다.</p>
+        <p style="margin-top:12px;">URL 끝에 <code>?edit=1</code>을 붙이면 편집 모드가 활성화됩니다.</p>
+      </div>
+
+      <!-- @ANCHOR:CONTENT:END ========================================= -->
+
+    </div>
+  </main>
+</div>
+
+<!-- ============================================================
+     Spec Side Panel (공용 — 수정하지 않음)
+     ============================================================ -->
+<aside class="spec-panel" id="spec-panel">
+  <div class="spec-panel-header">
+    <span class="spec-panel-header-title">컴포넌트 설명</span>
+    <div class="toggle-group">
+      <span class="label" id="spec-toggle-label">번호 표시</span>
+      <div class="toggle-switch active" id="spec-toggle"></div>
+    </div>
+  </div>
+  <div class="spec-panel-body" id="panel-body"></div>
+</aside>
+
+<!-- Edit toolbar -->
+<div class="edit-toolbar" id="edit-toolbar">
+  <button id="btn-new-pin" class="primary">+ 새 핀</button>
+  <div class="divider"></div>
+  <button id="btn-save-draft" class="save-draft" title="현재 상태를 HTML 파일의 draft 슬롯에 저장">💾 작업본 저장</button>
+  <button id="btn-save-version" class="primary" title="새 버전으로 HTML 저장">📌 버전 저장</button>
+  <div class="divider"></div>
+  <button id="btn-reset" title="현재 편집 내용(draft) 초기화">↺ 초기화</button>
+</div>
+
+<!-- Hints -->
+<div class="spec-hint read">🔎 번호 핀을 클릭해서 컴포넌트 설명을 확인하세요</div>
+<div class="spec-hint edit">✏️ 편집 모드 — 핀 드래그로 이동, 필드 클릭해서 수정</div>
+<div class="spec-hint placing">🎯 컴포넌트를 클릭하면 새 핀이 생성됩니다 (ESC로 취소)</div>
+
+<!-- ============================================================
+     Dialogs
+     ============================================================ -->
+
+<!-- 📌 Save version dialog -->
+<div class="dialog-backdrop" id="save-version-dialog">
+  <div class="dialog">
+    <div class="dialog-body">
+      <h3 class="dialog-title">📌 새 버전으로 저장</h3>
+      <p class="dialog-desc" id="save-version-desc">현재 작업 중인 내용을 새 버전으로 영구 기록합니다.</p>
+      <div class="dialog-form-group">
+        <label>버전 유형</label>
+        <div class="radio-group">
+          <label class="radio-row">
+            <input type="radio" name="version-type" value="minor" checked>
+            <span class="radio-row-text">
+              <span class="radio-row-title">마이너 <span id="label-minor-preview" style="color:var(--text-sub);font-weight:400;"></span></span>
+              <span class="radio-row-desc">문구·디테일 수정, 섹션 추가/삭제, 피드백 반영</span>
+            </span>
+          </label>
+          <label class="radio-row">
+            <input type="radio" name="version-type" value="major">
+            <span class="radio-row-text">
+              <span class="radio-row-title">메이저 <span id="label-major-preview" style="color:var(--text-sub);font-weight:400;"></span></span>
+              <span class="radio-row-desc">공식 리뷰 통과, 방향성 재설계, 외부 공유·최종 버전</span>
+            </span>
+          </label>
+        </div>
+      </div>
+      <div class="dialog-form-group">
+        <label>메모 (선택)</label>
+        <input type="text" id="version-memo" placeholder="이 버전에서 무엇을 바꿨나요?">
+      </div>
+    </div>
+    <div class="dialog-actions">
+      <button class="btn btn-ghost" id="save-version-cancel">취소</button>
+      <button class="btn btn-primary" id="save-version-confirm">저장 & 다운로드</button>
+    </div>
+  </div>
+</div>
+
+<!-- Conflict detection dialog -->
+<div class="dialog-backdrop" id="conflict-dialog">
+  <div class="dialog">
+    <div class="dialog-body">
+      <h3 class="dialog-title">⚠️ 그 사이 문서가 바뀌었어요</h3>
+      <p class="dialog-desc">
+        내 편집 기준 버전: <code id="conflict-base"></code><br>
+        공식 문서 최신 버전: <code id="conflict-current"></code>
+      </p>
+      <p class="dialog-desc" style="margin-top:12px;">어떻게 할까요?</p>
+    </div>
+    <div class="dialog-actions">
+      <button class="btn btn-ghost" id="conflict-discard">내 편집 버리기</button>
+      <button class="btn btn-primary" id="conflict-commit">내 편집을 새 버전으로</button>
+    </div>
+  </div>
+</div>
+
+<!-- Draft restore dialog -->
+<div class="dialog-backdrop" id="draft-dialog">
+  <div class="dialog">
+    <div class="dialog-body">
+      <h3 class="dialog-title">📋 작업 중인 내용이 있습니다</h3>
+      <p class="dialog-desc" id="draft-dialog-desc">이전에 편집하던 내용이 남아있습니다. 이어서 작업하시겠어요?</p>
+    </div>
+    <div class="dialog-actions">
+      <button class="btn btn-ghost" id="draft-discard">새로 시작</button>
+      <button class="btn btn-primary" id="draft-restore">이어서 하기</button>
+    </div>
+  </div>
+</div>
+
+<!-- Delete pin confirmation dialog -->
+<div class="dialog-backdrop" id="delete-pin-dialog">
+  <div class="dialog">
+    <div class="dialog-body">
+      <h3 class="dialog-title">핀 삭제</h3>
+      <p class="dialog-desc" id="delete-pin-desc">이 핀을 삭제할까요?</p>
+    </div>
+    <div class="dialog-actions">
+      <button class="btn btn-ghost" id="delete-pin-cancel">취소</button>
+      <button class="btn btn-danger" id="delete-pin-confirm">삭제</button>
+    </div>
+  </div>
+</div>
+
+<!-- Reset confirmation dialog -->
+<div class="dialog-backdrop" id="reset-dialog">
+  <div class="dialog">
+    <div class="dialog-body">
+      <h3 class="dialog-title">편집 내용 초기화</h3>
+      <p class="dialog-desc">현재 작업 중인 편집 내용(draft)을 버리고 최신 버전 상태로 되돌립니다. 저장된 버전은 영향받지 않습니다.</p>
+    </div>
+    <div class="dialog-actions">
+      <button class="btn btn-ghost" id="reset-cancel">취소</button>
+      <button class="btn btn-danger" id="reset-confirm">초기화</button>
+    </div>
+  </div>
+</div>
+
+<!-- @ANCHOR:DATA:START ==============================================
+     Embedded Data (HTML 파일이 정본 — self-export 시 이 블록만 교체됨)
+     AI 편집 시: 직접 수정하지 마세요. 브라우저가 자동 관리합니다.
+     =========================================================== -->
+<script type="application/json" id="spec-data">
+{
+  "versions": [],
+  "current": null,
+  "nextId": 1
+}
+</script>
+<!-- @ANCHOR:DATA:END ================================================ -->
+
+<script>
+/* @ANCHOR:CONFIG:START ==========================================
+   ⚙️ TEMPLATE_CONFIG — 기획서마다 이 블록만 수정하세요
+   =========================================================== */
+const TEMPLATE_CONFIG = {
+  PAGE_TITLE:  '화면 설계 템플릿',
+  STORAGE_KEY: 'spec_template_base',   // localStorage draft 키 (기획서마다 고유)
+};
+/* @ANCHOR:CONFIG:END ============================================ */
+</script>
+
+<!-- 공용 인프라 (CSS는 shell.css, JS는 shell.js — 같은 폴더에 두세요) -->
+<script src="shell.js"></script>
+
+</body>
+</html>

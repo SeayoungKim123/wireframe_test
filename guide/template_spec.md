@@ -25,20 +25,25 @@
 
 ## 2. 파일 구조
 
-`spec_template_base.html` 한 파일에 전부 들어있음 (≈2050줄).
+세 파일로 분리되어 있음 (같은 폴더에 함께 두어야 동작).
 
 ```
-[1~707]    HEAD + CSS              공용 인프라
-[709~744]  상단 컨트롤 바            공용
-[746~787]  App / Main + 컨텐츠      공용 틀 + 사용자 영역(@ANCHOR:CONTENT)
-[789~805]  스펙 사이드 패널          공용
-[807~815]  편집 툴바                공용
-[817~820]  힌트                    공용
-[822~921]  다이얼로그               공용
-[923~941]  Embedded Data           @ANCHOR:DATA
-[942~951]  TEMPLATE_CONFIG         @ANCHOR:CONFIG
-[952~2050] JS 공용 로직             공용
+spec_template_base.html  (≈270줄)   본체 — HTML 구조 + CONFIG + DATA + 콘텐츠
+shell.css                (≈735줄)   공용 스타일 — 모든 기획서가 동일하게 공유
+shell.js                 (≈1140줄)  공용 인프라 JS — 모든 기획서가 동일하게 공유
 ```
+
+**`spec_template_base.html` 내부 매핑**
+
+```
+[1~38]     HEAD + <link href="shell.css">      공용
+[40~214]   상단 바 + App + 콘텐츠 + 패널 + 툴바 + 다이얼로그   공용 틀 + @ANCHOR:CONTENT
+[247~253]  Embedded Data                       @ANCHOR:DATA
+[256~265]  TEMPLATE_CONFIG (인라인 <script>)    @ANCHOR:CONFIG
+[268]      <script src="shell.js"></script>    공용 인프라 로드
+```
+
+**왜 분리했나** — 버전마다 같은 CSS/JS를 통째로 복붙하던 통조림 모델이 한 기획서 안에서 너무 비대해졌음. 한 repo 안에서는 모든 버전이 같은 `shell.*` 한 벌을 공유해도 자연스러움. 셸 변경은 같은 repo 내 모든 버전에 동시 반영.
 
 ---
 
@@ -176,11 +181,13 @@ Edit(좁은 범위)                   → 부분 수정
 
 ### 7.3 Self-export
 
-페이지 로드 시점:
+페이지 로드 시점 (`shell.js` 첫 줄):
 ```js
 const ORIGINAL_HTML = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
 ```
 런타임 DOM 변형(편집 상태 등)이 저장 파일에 섞이는 것을 막음. 다운로드 시 이 원본에서 `#spec-data` 블록만 새 JSON으로 교체.
+
+**셸 분리에 따른 영향**: `ORIGINAL_HTML`에는 `<link href="shell.css">` 와 `<script src="shell.js">` 참조가 그대로 포함됨. 따라서 다운로드된 HTML도 **같은 폴더(또는 상대경로 위치)에 셸 두 파일이 있어야** 정상 동작. 운영에서는 `versions/v0.X.html` ↔ `../shell.css` / `../shell.js` 관계가 유지되도록 폴더 구조를 지킬 것.
 
 ### 7.4 Diff 스코프 (비교 모드)
 
@@ -197,7 +204,8 @@ const ORIGINAL_HTML = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
 | 페이지 메타 | `@ANCHOR:CONFIG` 안 2줄 | 타이틀, storage key |
 | 와이어프레임 | `@ANCHOR:CONTENT` 안 HTML | 컴포넌트 추가·배치 |
 | 핀 데이터 | 브라우저 편집 모드 (AI 직접수정 금지) | 역할·상태·속성 |
-| 스타일 | `<style>` 내 CSS 변수 | 색상·간격 |
+| 스타일 | `shell.css` 상단 `:root` CSS 변수 | 색상·간격 (같은 repo 내 모든 버전에 동시 반영) |
+| 인프라 동작 | `shell.js` (한 곳만 고치면 모든 버전 적용) | 토글·다이얼로그·저장 흐름 |
 | 저장 형식 | `commitNewVersion()` / 스키마 | 필드 추가 (주의: 기존 파일 호환 고려) |
 
 ---
