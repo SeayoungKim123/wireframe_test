@@ -197,7 +197,7 @@
   /* ===== App Layout ===== */
   .app { display: flex; min-height: calc(100vh - 52px); }
 
-  .main { flex: 1; position: relative; overflow: hidden; }
+  .main { flex: 1; position: relative; overflow: hidden; margin-right: 420px; }
   .main-inner { padding: 24px 32px 96px; }
 
   .page-header {
@@ -357,7 +357,7 @@
     box-shadow: 0 0 0 3px rgba(156, 163, 175, 0.2);
   }
 
-  /* Spec Side Panel */
+  /* Spec Side Panel — 항상 노출, 아코디언 구조 */
   .spec-panel {
     position: fixed;
     top: 52px;
@@ -366,28 +366,19 @@
     height: calc(100vh - 52px);
     background: var(--surface);
     border-left: 1px solid var(--border);
-    box-shadow: -8px 0 24px rgba(0,0,0,0.06);
-    transform: translateX(100%);
-    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 90;
     display: flex;
     flex-direction: column;
   }
-  .spec-panel.open { transform: translateX(0); }
   .spec-panel-header {
-    padding: 18px 20px 14px;
+    padding: 14px 20px;
     border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 12px;
-  }
-  .spec-panel-header-left {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex: 1;
-    min-width: 0;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    flex-shrink: 0;
   }
   .spec-panel-number {
     display: inline-flex;
@@ -401,19 +392,6 @@
     flex-shrink: 0;
   }
   body.edit-mode .spec-panel-number { background: var(--edit); }
-  .spec-panel-title {
-    font-size: 16px;
-    font-weight: 700;
-    letter-spacing: -0.01em;
-    outline: none;
-    flex: 1;
-    min-width: 0;
-  }
-  .spec-panel-title.editable { padding: 2px 6px; border-radius: 4px; }
-  .spec-panel-title.editable:hover { background: var(--edit-soft); }
-  .spec-panel-title.editable:focus { background: var(--edit-soft); box-shadow: 0 0 0 2px var(--edit); }
-
-  .spec-panel-header-actions { display: flex; gap: 4px; align-items: center; }
   .panel-icon-btn {
     background: transparent;
     border: none;
@@ -427,18 +405,77 @@
   .panel-icon-btn:hover { background: var(--surface-alt); color: var(--text); }
   .panel-icon-btn.danger:hover { color: var(--danger); }
 
-  .panel-diff-summary {
+  .spec-panel-body { overflow-y: auto; flex: 1; }
+  .panel-empty {
+    padding: 32px 20px;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 13px;
+    line-height: 1.7;
+  }
+
+  /* Pin accordion */
+  .pin-accordion { border-bottom: 1px solid var(--border); }
+  .pin-accordion-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.1s;
+  }
+  .pin-accordion-header:hover { background: var(--surface-alt); }
+  .pin-accordion.active > .pin-accordion-header { background: var(--primary-soft); }
+  body.edit-mode .pin-accordion.active > .pin-accordion-header { background: var(--edit-soft); }
+  .pin-accordion-arrow {
+    color: var(--text-muted);
+    font-size: 10px;
+    width: 10px;
+    flex-shrink: 0;
+    transition: transform 0.15s;
+    display: inline-block;
+  }
+  .pin-accordion.expanded > .pin-accordion-header .pin-accordion-arrow { transform: rotate(90deg); }
+  .pin-accordion-title {
+    flex: 1;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    outline: none;
+    min-width: 0;
+  }
+  body.edit-mode .pin-accordion-title.editable {
+    white-space: normal;
+    overflow: visible;
+    padding: 2px 6px;
+    border-radius: 4px;
+    cursor: text;
+  }
+  body.edit-mode .pin-accordion-title.editable:hover { background: var(--edit-soft); }
+  body.edit-mode .pin-accordion-title.editable:focus { background: var(--edit-soft); box-shadow: 0 0 0 2px var(--edit); }
+  .pin-accordion-actions { display: flex; gap: 4px; flex-shrink: 0; }
+  .pin-accordion-body {
     display: none;
-    padding: 10px 16px;
+    padding: 8px 18px 18px;
+  }
+  .pin-accordion.expanded > .pin-accordion-body { display: block; }
+
+  .pin-accordion-diff-summary {
+    display: none;
+    padding: 8px 16px;
     background: var(--diff-field-bg);
-    border-bottom: 1px solid #fde68a;
     color: #92400e;
     font-size: 12px;
     font-weight: 500;
+    border-top: 1px solid #fde68a;
   }
-  body.compare-mode .panel-diff-summary.has-diff { display: block; }
-
-  .spec-panel-body { padding: 18px 20px; overflow-y: auto; flex: 1; }
+  body.compare-mode .pin-accordion.has-diff > .pin-accordion-diff-summary { display: block; }
+  body.compare-mode .pin-accordion.diff-added > .pin-accordion-header { box-shadow: inset 3px 0 0 var(--diff-added); }
+  body.compare-mode .pin-accordion.diff-modified > .pin-accordion-header { box-shadow: inset 3px 0 0 var(--diff-modified); }
 
   .spec-section { margin-bottom: 18px; padding: 4px; border-radius: 6px; }
   .spec-section:last-child { margin-bottom: 0; }
@@ -785,6 +822,25 @@
         </div>
       </div>
 
+      <section data-component="reading-stats" style="display:grid; grid-template-columns: repeat(4, 1fr); gap:10px; margin-bottom:20px;">
+        <div style="background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:16px;">
+          <div style="font-size:11px; color:var(--text-sub); font-weight:600; margin-bottom:6px; letter-spacing:0.02em;">총 권수</div>
+          <div style="font-size:22px; font-weight:700; letter-spacing:-0.02em;">12<span style="font-size:13px; color:var(--text-sub); font-weight:500; margin-left:2px;">권</span></div>
+        </div>
+        <div style="background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:16px;">
+          <div style="font-size:11px; color:var(--text-sub); font-weight:600; margin-bottom:6px; letter-spacing:0.02em;">완독</div>
+          <div style="font-size:22px; font-weight:700; letter-spacing:-0.02em; color:#065f46;">9<span style="font-size:13px; color:var(--text-sub); font-weight:500; margin-left:2px;">권</span></div>
+        </div>
+        <div style="background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:16px;">
+          <div style="font-size:11px; color:var(--text-sub); font-weight:600; margin-bottom:6px; letter-spacing:0.02em;">읽는 중</div>
+          <div style="font-size:22px; font-weight:700; letter-spacing:-0.02em; color:#92400e;">3<span style="font-size:13px; color:var(--text-sub); font-weight:500; margin-left:2px;">권</span></div>
+        </div>
+        <div style="background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:16px;">
+          <div style="font-size:11px; color:var(--text-sub); font-weight:600; margin-bottom:6px; letter-spacing:0.02em;">완독률</div>
+          <div style="font-size:22px; font-weight:700; letter-spacing:-0.02em;">75<span style="font-size:13px; color:var(--text-sub); font-weight:500; margin-left:2px;">%</span></div>
+        </div>
+      </section>
+
       <section data-component="add-book-form" style="background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:20px; margin-bottom:20px;">
         <h2 style="font-size:14px; font-weight:700; margin-bottom:12px;">+ 새 책 기록</h2>
         <div style="display:grid; grid-template-columns: 1fr 1fr 140px; gap:8px; margin-bottom:8px;">
@@ -855,17 +911,7 @@
      Spec Side Panel (공용 — 수정하지 않음)
      ============================================================ -->
 <aside class="spec-panel" id="spec-panel">
-  <div class="spec-panel-header">
-    <div class="spec-panel-header-left">
-      <span class="spec-panel-number" id="panel-number">1</span>
-      <span class="spec-panel-title" id="panel-title" data-field="title" data-placeholder="컴포넌트 이름">컴포넌트 이름</span>
-    </div>
-    <div class="spec-panel-header-actions">
-      <button class="panel-icon-btn danger" id="panel-delete" title="핀 삭제" style="display:none;">🗑</button>
-      <button class="panel-icon-btn" id="panel-close">✕</button>
-    </div>
-  </div>
-  <div class="panel-diff-summary" id="panel-diff-summary"></div>
+  <div class="spec-panel-header">컴포넌트 설명</div>
   <div class="spec-panel-body" id="panel-body"></div>
 </aside>
 
@@ -993,10 +1039,10 @@
 {
   "versions": [
     {
-      "id": "v0.1",
-      "timestamp": "2026-04-18T14:00:00.000Z",
+      "id": "v0.2",
+      "timestamp": "2026-05-01T05:00:00.000Z",
       "author": "claude",
-      "memo": "초기 기획 (MVP) — 핀 7개",
+      "memo": "상단 통계 카드 섹션 추가",
       "specs": {
         "1": {
           "title": "상단 통계 뱃지",
@@ -1106,13 +1152,30 @@
             ["복구", "없음 (MVP)"]
           ],
           "confluence": ""
+        },
+        "8": {
+          "title": "독서 통계 카드",
+          "component": "reading-stats",
+          "position": { "x": 16, "y": 16 },
+          "role": "한 화면에서 독서 진행 상황을 빠르게 확인하도록 핵심 지표 4개를 카드로 노출한다.",
+          "states": [
+            "기록이 0건이면 모든 수치는 0 (완독률은 ─)",
+            "필터 탭 선택과 무관하게 전체 기준으로 계산",
+            "책 등록/삭제 시 즉시 갱신"
+          ],
+          "props": [
+            ["카드 구성", "총 권수 / 완독 / 읽는 중 / 완독률"],
+            ["완독률 정의", "완독 ÷ 총 권수 × 100, 소수점 버림"],
+            ["배치", "가로 4컬럼 (모바일은 2x2)"]
+          ],
+          "confluence": ""
         }
       },
       "changes": []
     }
   ],
-  "current": "v0.1",
-  "nextId": 8
+  "current": "v0.2",
+  "nextId": 9
 }
 </script>
 <!-- @ANCHOR:DATA:END ================================================ -->
@@ -1122,8 +1185,8 @@
    ⚙️ TEMPLATE_CONFIG — 기획서마다 이 블록만 수정하세요
    =========================================================== */
 const TEMPLATE_CONFIG = {
-  PAGE_TITLE:  '독서 기록표',
-  STORAGE_KEY: 'spec_reading_log',   // localStorage draft 키 (기획서마다 고유)
+  PAGE_TITLE:  '독서 기록표 v0.2',
+  STORAGE_KEY: 'spec_reading_log_v0_2',   // localStorage draft 키 (기획서마다 고유)
 };
 /* @ANCHOR:CONFIG:END ============================================ */
 
@@ -1154,6 +1217,46 @@ let compareMode = false;
 let currentPinId = null;
 let isEditMode = false;
 let placingPin = false;
+
+/* ============================================================
+   Sibling versions + 직전 버전 baseline (manifest 기반)
+   ============================================================
+   - manifest.json: 형제 버전 목록 → 상단 드롭다운에 노출
+   - 직전 버전 HTML도 fetch해서 specs 추출 → 비교 모드의 baseline
+   - file:// 직접 열기 시 fetch가 막히면 모두 null로 남고 자기 버전만 노출, 비교 모드 비활성.
+   ============================================================ */
+let siblingVersions = null;
+let prevVersionId = null;
+let prevVersionSpecs = null;
+
+fetch('manifest.json')
+  .then(r => r.ok ? r.json() : null)
+  .then(m => {
+    if (!m || !Array.isArray(m.versions)) return;
+    siblingVersions = m.versions;
+    // 자기 직전 버전 식별
+    const myIdx = m.versions.findIndex(v => v.id === fileData.current);
+    if (myIdx > 0) {
+      const prev = m.versions[myIdx - 1];
+      prevVersionId = prev.id;
+      return fetch(prev.file)
+        .then(r => r.ok ? r.text() : null)
+        .then(html => {
+          if (!html) return;
+          const match = html.match(/<script type="application\/json" id="spec-data">([\s\S]*?)<\/script>/);
+          if (!match) return;
+          try {
+            const data = JSON.parse(match[1]);
+            const ver = (data.versions || []).find(v => v.id === prev.id);
+            if (ver && ver.specs) {
+              prevVersionSpecs = ver.specs;
+              updateCompareToggleAvailability();
+            }
+          } catch (e) { console.warn('직전 버전 specs 파싱 실패:', e); }
+        });
+    }
+  })
+  .catch(() => {});
 
 /* ============================================================
    URL param gate
@@ -1377,34 +1480,35 @@ function computeDiffMap(newSpecs, oldSpecs) {
 function getBaselineSpecs() {
   // For compare mode: baseline specs to compare against current view
   if (currentViewVersion) {
-    // Viewing specific version → baseline = version right before it
     const idx = fileData.versions.findIndex(v => v.id === currentViewVersion);
     if (idx > 0) return fileData.versions[idx - 1].specs;
+    // 분리 모델: 자기 파일 안에 직전이 없으면 형제 직전을 사용
+    if (currentViewVersion === fileData.current) return prevVersionSpecs;
     return null;
   }
-  // Live view with draft → baseline = draft's base version (or latest)
   if (draft) {
     const baseId = draft.baseVersion || fileData.current;
     if (!baseId) return null;
     const v = fileData.versions.find(v => v.id === baseId);
     return v ? v.specs : null;
   }
-  // Live view without draft → baseline = prev of latest
+  // Live view: baseline = 자기 파일 안 직전, 없으면 형제 직전 (분리 모델)
   const idx = fileData.versions.findIndex(v => v.id === fileData.current);
   if (idx > 0) return fileData.versions[idx - 1].specs;
-  return null;
+  return prevVersionSpecs;
 }
 
 function getBaselineLabel() {
   if (currentViewVersion) {
     const idx = fileData.versions.findIndex(v => v.id === currentViewVersion);
     if (idx > 0) return fileData.versions[idx - 1].id;
+    if (currentViewVersion === fileData.current) return prevVersionId;
     return null;
   }
   if (draft) return draft.baseVersion || fileData.current;
   const idx = fileData.versions.findIndex(v => v.id === fileData.current);
   if (idx > 0) return fileData.versions[idx - 1].id;
-  return null;
+  return prevVersionId;
 }
 
 function getCurrentLabel() {
@@ -1493,7 +1597,7 @@ function attachPinHandlers(pin, id) {
   pin.addEventListener('click', (e) => {
     e.stopPropagation();
     if (didDrag) { didDrag = false; return; }
-    openPanel(id);
+    focusPin(id);
   });
 }
 
@@ -1566,122 +1670,158 @@ function updateCompareSummary(info) {
 }
 
 /* ============================================================
-   Panel
+   Panel — 항상 노출 + 아코디언 (핀별)
    ============================================================ */
 const panel = document.getElementById('spec-panel');
-const panelNumber = document.getElementById('panel-number');
-const panelTitle = document.getElementById('panel-title');
 const panelBody = document.getElementById('panel-body');
-const panelClose = document.getElementById('panel-close');
-const panelDelete = document.getElementById('panel-delete');
-const panelDiffSummary = document.getElementById('panel-diff-summary');
+const expandedPins = new Set();   // 펼침 상태인 핀 id
+const deletePinDialog = document.getElementById('delete-pin-dialog');
+const deletePinDesc = document.getElementById('delete-pin-desc');
 
-function openPanel(id) {
-  const specs = getCurrentSpecs();
-  const data = specs[id];
-  if (!data) return;
-  currentPinId = id;
+function focusPin(id) {
+  const sid = String(id);
+  currentPinId = sid;
+  expandedPins.add(sid);
+  renderPanel();
 
-  const editable = isEditMode && !isReadOnlyView();
-
-  panelNumber.textContent = id;
-  panelTitle.textContent = data.title;
-  panelTitle.classList.toggle('editable', editable);
-  panelTitle.contentEditable = editable;
-
-  renderPanelBody(data, editable);
-
-  panel.classList.add('open');
-  panelDelete.style.display = editable ? 'inline-block' : 'none';
-
+  // 핀 강조
   document.querySelectorAll('.spec-pin').forEach(p => p.classList.remove('active'));
-  document.getElementById(`pin-${id}`)?.classList.add('active');
+  document.getElementById(`pin-${sid}`)?.classList.add('active');
 
-  updatePanelDiffHighlight(id);
+  // 해당 아코디언 항목으로 스크롤
+  setTimeout(() => {
+    const accEl = panelBody.querySelector(`.pin-accordion[data-pin="${sid}"]`);
+    accEl?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }, 30);
 }
 
-function renderPanelBody(data, editable) {
-  const html = `
-    <div class="spec-section" data-section="role">
+function renderPanel() {
+  const specs = getCurrentSpecs();
+  const editable = isEditMode && !isReadOnlyView();
+  const ids = Object.keys(specs).sort((a, b) => parseInt(a) - parseInt(b));
+
+  if (ids.length === 0) {
+    panelBody.innerHTML = `<div class="panel-empty">아직 핀이 없습니다.${editable ? '<br>편집 도구의 <b>+ 새 핀</b>으로 추가하세요.' : ''}</div>`;
+    return;
+  }
+
+  // diff 정보 (compare 모드일 때)
+  let diffMap = {};
+  if (compareMode) {
+    const baseline = getBaselineSpecs();
+    if (baseline !== null) diffMap = computeDiffMap(specs, baseline);
+  }
+
+  panelBody.innerHTML = ids.map(id => {
+    const data = specs[id];
+    const expanded = expandedPins.has(id);
+    const active = currentPinId === id;
+    const diff = diffMap[id];
+    const diffClass = diff?.action === '추가' ? 'diff-added'
+      : diff?.action === '수정' ? 'diff-modified'
+      : '';
+    const hasDiff = !!diff;
+
+    return `
+      <div class="pin-accordion ${expanded ? 'expanded' : ''} ${active ? 'active' : ''} ${diffClass} ${hasDiff ? 'has-diff' : ''}" data-pin="${id}">
+        <div class="pin-accordion-header" data-toggle="${id}">
+          <span class="pin-accordion-arrow">▸</span>
+          <span class="spec-panel-number">${id}</span>
+          <span class="pin-accordion-title ${editable ? 'editable' : ''}" data-field="title" data-pin="${id}" data-placeholder="컴포넌트 이름" contenteditable="${editable}">${escapeHTML(data.title || '')}</span>
+          ${editable ? `<div class="pin-accordion-actions"><button class="panel-icon-btn danger" data-action="delete" data-pin="${id}" title="핀 삭제">🗑</button></div>` : ''}
+        </div>
+        ${diff?.action === '추가' ? `<div class="pin-accordion-diff-summary">✨ ${getBaselineLabel()} 대비 추가됨</div>` : ''}
+        ${diff?.action === '수정' && diff.fields?.length ? `<div class="pin-accordion-diff-summary">✏️ 변경: ${diff.fields.join(', ')}</div>` : ''}
+        <div class="pin-accordion-body">${renderPinSections(id, data, editable, diff)}</div>
+      </div>
+    `;
+  }).join('');
+
+  bindPanelEvents();
+}
+
+function renderPinSections(id, data, editable, diff) {
+  const fieldHasDiff = (f) => diff?.fields?.includes(f) ? 'diff-field' : '';
+  return `
+    <div class="spec-section ${fieldHasDiff('역할')}" data-section="role" data-pin="${id}">
       <div class="spec-section-title">역할 <span class="diff-tag">수정됨</span></div>
-      <div class="spec-section-content editable" data-field="role" data-placeholder="이 컴포넌트의 역할">${escapeHTML(data.role || '')}</div>
+      <div class="spec-section-content editable" data-field="role" data-pin="${id}" data-placeholder="이 컴포넌트의 역할" contenteditable="${editable}">${escapeHTML(data.role || '')}</div>
     </div>
 
-    <div class="spec-section" data-section="states">
+    <div class="spec-section ${fieldHasDiff('상태')}" data-section="states" data-pin="${id}">
       <div class="spec-section-title">상태 / 변형 <span class="diff-tag">수정됨</span></div>
-      <ul class="spec-list" id="states-list">
+      <ul class="spec-list">
         ${(data.states || []).map((s, i) => `
           <li>
-            <span class="spec-list-text editable" data-field="states" data-index="${i}" data-placeholder="상태 설명">${escapeHTML(s)}</span>
-            <button class="spec-list-delete" data-delete="states" data-index="${i}" title="삭제">✕</button>
+            <span class="spec-list-text editable" data-field="states" data-pin="${id}" data-index="${i}" data-placeholder="상태 설명" contenteditable="${editable}">${escapeHTML(s)}</span>
+            <button class="spec-list-delete" data-delete="states" data-pin="${id}" data-index="${i}" title="삭제">✕</button>
           </li>
         `).join('')}
       </ul>
-      <button class="add-item-btn" data-add="states">+ 상태 추가</button>
+      <button class="add-item-btn" data-add="states" data-pin="${id}">+ 상태 추가</button>
     </div>
 
-    <div class="spec-section" data-section="props">
+    <div class="spec-section ${fieldHasDiff('속성')}" data-section="props" data-pin="${id}">
       <div class="spec-section-title">주요 속성 <span class="diff-tag">수정됨</span></div>
-      <div id="props-list">
+      <div>
         ${(data.props || []).map(([k, v], i) => `
           <div class="prop-row">
-            <span class="prop-key editable" data-field="props-key" data-index="${i}" data-placeholder="속성명">${escapeHTML(k)}</span>
-            <span class="prop-value editable" data-field="props-value" data-index="${i}" data-placeholder="값">${escapeHTML(v)}</span>
-            <button class="spec-list-delete" data-delete="props" data-index="${i}" title="삭제">✕</button>
+            <span class="prop-key editable" data-field="props-key" data-pin="${id}" data-index="${i}" data-placeholder="속성명" contenteditable="${editable}">${escapeHTML(k)}</span>
+            <span class="prop-value editable" data-field="props-value" data-pin="${id}" data-index="${i}" data-placeholder="값" contenteditable="${editable}">${escapeHTML(v)}</span>
+            <button class="spec-list-delete" data-delete="props" data-pin="${id}" data-index="${i}" title="삭제">✕</button>
           </div>
         `).join('')}
       </div>
-      <button class="add-item-btn" data-add="props">+ 속성 추가</button>
+      <button class="add-item-btn" data-add="props" data-pin="${id}">+ 속성 추가</button>
     </div>
 
-    <div class="spec-section" data-section="confluence">
+    <div class="spec-section ${fieldHasDiff('Confluence')}" data-section="confluence" data-pin="${id}">
       <div class="spec-section-title">자세한 정책 <span class="diff-tag">수정됨</span></div>
       <div class="spec-confluence-link">
-        📄 <span class="editable" data-field="confluence" data-placeholder="Confluence 경로">${escapeHTML(data.confluence || '')}</span>
+        📄 <span class="editable" data-field="confluence" data-pin="${id}" data-placeholder="Confluence 경로" contenteditable="${editable}">${escapeHTML(data.confluence || '')}</span>
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-left: auto; flex-shrink: 0;">
           <path d="M7 17L17 7M7 7h10v10"/>
         </svg>
       </div>
     </div>
   `;
-  panelBody.innerHTML = html;
-  panelBody.querySelectorAll('.editable').forEach(el => { el.contentEditable = editable; });
-  bindPanelEvents();
-}
-
-function updatePanelDiffHighlight(pinId) {
-  panelBody.querySelectorAll('.spec-section').forEach(s => s.classList.remove('diff-field'));
-  panelDiffSummary.classList.remove('has-diff');
-  panelDiffSummary.textContent = '';
-
-  if (!compareMode) return;
-  const baseline = getBaselineSpecs();
-  if (baseline === null) return;
-  const current = getCurrentSpecs();
-  const diff = computeDiffMap(current, baseline);
-  const info = diff[pinId];
-  if (!info) return;
-
-  if (info.action === '추가') {
-    panelDiffSummary.textContent = `✨ 이 핀은 ${getBaselineLabel()} 대비 추가되었습니다`;
-    panelDiffSummary.classList.add('has-diff');
-    return;
-  }
-  if (info.action === '수정' && info.fields?.length) {
-    panelDiffSummary.textContent = `✏️ 변경된 섹션: ${info.fields.join(', ')} (${getBaselineLabel()} → ${getCurrentLabel()})`;
-    panelDiffSummary.classList.add('has-diff');
-    const map = { '제목': null, '역할': 'role', '상태': 'states', '속성': 'props', 'Confluence': 'confluence' };
-    info.fields.forEach(f => {
-      const key = map[f];
-      if (key) panelBody.querySelector(`[data-section="${key}"]`)?.classList.add('diff-field');
-    });
-  }
 }
 
 function bindPanelEvents() {
+  // 헤더 클릭 → 아코디언 토글 (편집 가능 영역/액션 버튼 클릭은 무시)
+  panelBody.querySelectorAll('.pin-accordion-header').forEach(header => {
+    header.addEventListener('click', (e) => {
+      if (e.target.closest('.editable')) return;
+      if (e.target.closest('[data-action]')) return;
+      const id = header.dataset.toggle;
+      const acc = header.parentElement;
+      const willExpand = !acc.classList.contains('expanded');
+      acc.classList.toggle('expanded', willExpand);
+      if (willExpand) expandedPins.add(id); else expandedPins.delete(id);
+    });
+  });
+  // 핀 삭제 버튼
+  panelBody.querySelectorAll('[data-action="delete"]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const id = btn.dataset.pin;
+      currentPinId = id;
+      const title = getCurrentSpecs()[id]?.title || '(이름 없음)';
+      deletePinDesc.textContent = `핀 ${id} "${title}"을(를) 삭제할까요?`;
+      deletePinDialog.classList.add('open');
+    });
+  });
+  // 편집 핸들러
   panelBody.querySelectorAll('.editable').forEach(el => {
     el.addEventListener('blur', handleEditBlur);
+    // 제목 영역에서 Enter 누르면 줄바꿈 대신 blur
+    if (el.classList.contains('pin-accordion-title')) {
+      el.addEventListener('keydown', (ev) => {
+        if (ev.key === 'Enter') { ev.preventDefault(); el.blur(); }
+      });
+    }
   });
+  // 항목 추가/삭제
   panelBody.querySelectorAll('[data-delete]').forEach(btn => {
     btn.addEventListener('click', handleDelete);
   });
@@ -1691,52 +1831,56 @@ function bindPanelEvents() {
 }
 
 function handleEditBlur(e) {
-  if (!isEditMode || isReadOnlyView() || !currentPinId) return;
+  if (!isEditMode || isReadOnlyView()) return;
   const el = e.target;
+  const pinId = el.dataset.pin;
+  if (!pinId) return;
   const field = el.dataset.field;
   const value = el.textContent.trim();
   mutateDraft(d => {
-    const spec = d.specs[currentPinId];
+    const spec = d.specs[pinId];
     if (!spec) return;
-    if (field === 'role' || field === 'confluence') spec[field] = value;
+    if (field === 'title') spec.title = value;
+    else if (field === 'role' || field === 'confluence') spec[field] = value;
     else if (field === 'states') spec.states[el.dataset.index] = value;
     else if (field === 'props-key') spec.props[el.dataset.index][0] = value;
     else if (field === 'props-value') spec.props[el.dataset.index][1] = value;
   });
-  if (compareMode) applyDiffVisuals();
+  if (compareMode) { applyDiffVisuals(); renderPanel(); }
 }
 
-panelTitle.addEventListener('blur', () => {
-  if (!isEditMode || isReadOnlyView() || !currentPinId) return;
-  mutateDraft(d => {
-    if (d.specs[currentPinId]) d.specs[currentPinId].title = panelTitle.textContent.trim();
-  });
-  if (compareMode) applyDiffVisuals();
-});
-
 function handleDelete(e) {
-  const type = e.currentTarget.dataset.delete;
-  const idx = parseInt(e.currentTarget.dataset.index);
+  e.stopPropagation();
+  const btn = e.currentTarget;
+  const type = btn.dataset.delete;
+  const idx = parseInt(btn.dataset.index);
+  const pinId = btn.dataset.pin;
+  if (!pinId) return;
   mutateDraft(d => {
-    d.specs[currentPinId][type].splice(idx, 1);
+    d.specs[pinId][type].splice(idx, 1);
   });
-  renderPanelBody(getCurrentSpecs()[currentPinId], true);
-  updatePanelDiffHighlight(currentPinId);
+  renderPanel();
   if (compareMode) applyDiffVisuals();
 }
 
 function handleAdd(e) {
-  const type = e.currentTarget.dataset.add;
+  e.stopPropagation();
+  const btn = e.currentTarget;
+  const type = btn.dataset.add;
+  const pinId = btn.dataset.pin;
+  if (!pinId) return;
   mutateDraft(d => {
-    if (type === 'states') d.specs[currentPinId].states.push('새 상태');
-    else if (type === 'props') d.specs[currentPinId].props.push(['새 속성', '값']);
+    if (type === 'states') d.specs[pinId].states.push('새 상태');
+    else if (type === 'props') d.specs[pinId].props.push(['새 속성', '값']);
   });
-  renderPanelBody(getCurrentSpecs()[currentPinId], true);
-  updatePanelDiffHighlight(currentPinId);
+  expandedPins.add(pinId);
+  renderPanel();
   setTimeout(() => {
-    const lastEl = panelBody.querySelectorAll(`[data-field^="${type}"]`);
-    if (lastEl.length) {
-      const target = lastEl[lastEl.length - (type === 'props' ? 2 : 1)];
+    const accEl = panelBody.querySelector(`.pin-accordion[data-pin="${pinId}"]`);
+    if (!accEl) return;
+    const els = accEl.querySelectorAll(`[data-field^="${type}"]`);
+    if (els.length) {
+      const target = els[els.length - (type === 'props' ? 2 : 1)];
       target?.focus();
       document.execCommand?.('selectAll');
     }
@@ -1744,35 +1888,20 @@ function handleAdd(e) {
   if (compareMode) applyDiffVisuals();
 }
 
-function closePanel() {
-  panel.classList.remove('open');
-  currentPinId = null;
-  document.querySelectorAll('.spec-pin').forEach(p => p.classList.remove('active'));
-}
-
-panelClose.addEventListener('click', closePanel);
-
 /* ============================================================
    Pin delete confirmation
    ============================================================ */
-const deletePinDialog = document.getElementById('delete-pin-dialog');
-const deletePinDesc = document.getElementById('delete-pin-desc');
-
-panelDelete.addEventListener('click', () => {
-  if (!currentPinId) return;
-  const title = getCurrentSpecs()[currentPinId]?.title || '(이름 없음)';
-  deletePinDesc.textContent = `핀 ${currentPinId} "${title}"을(를) 삭제할까요?`;
-  deletePinDialog.classList.add('open');
-});
 document.getElementById('delete-pin-cancel').addEventListener('click', () => {
   deletePinDialog.classList.remove('open');
 });
 document.getElementById('delete-pin-confirm').addEventListener('click', () => {
   const id = currentPinId;
   mutateDraft(d => { delete d.specs[id]; });
+  expandedPins.delete(id);
+  currentPinId = null;
   deletePinDialog.classList.remove('open');
-  closePanel();
   renderAllPins();
+  renderPanel();
 });
 
 /* ============================================================
@@ -1785,10 +1914,7 @@ const compareToggle = document.getElementById('compare-toggle');
 specToggle.addEventListener('click', () => {
   const active = specToggle.classList.toggle('active');
   document.body.classList.toggle('spec-mode', active);
-  if (!active) {
-    closePanel();
-    if (isEditMode) editToggle.click();
-  }
+  if (!active && isEditMode) editToggle.click();
 });
 
 editToggle.addEventListener('click', () => {
@@ -1801,14 +1927,14 @@ editToggle.addEventListener('click', () => {
   isEditMode = editToggle.classList.toggle('active');
   document.body.classList.toggle('edit-mode', isEditMode);
   if (isEditMode && !specToggle.classList.contains('active')) specToggle.click();
-  if (currentPinId) openPanel(currentPinId);
+  renderPanel();
 });
 
 compareToggle.addEventListener('click', () => {
   if (compareToggle.classList.contains('disabled')) return;
   compareMode = compareToggle.classList.toggle('active');
   applyDiffVisuals();
-  if (currentPinId) updatePanelDiffHighlight(currentPinId);
+  renderPanel();
 });
 
 function updateCompareToggleAvailability() {
@@ -1859,21 +1985,18 @@ document.addEventListener('click', (e) => {
   renderAllPins();
   placingPin = false;
   document.body.classList.remove('pin-placing');
-  openPanel(String(id));
+  focusPin(String(id));
   setTimeout(() => {
-    panelTitle.focus();
+    const titleEl = panelBody.querySelector(`.pin-accordion[data-pin="${id}"] .pin-accordion-title`);
+    titleEl?.focus();
     document.execCommand?.('selectAll');
   }, 100);
 }, true);
 
 document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') {
-    if (placingPin) {
-      placingPin = false;
-      document.body.classList.remove('pin-placing');
-    } else if (panel.classList.contains('open')) {
-      closePanel();
-    }
+  if (e.key === 'Escape' && placingPin) {
+    placingPin = false;
+    document.body.classList.remove('pin-placing');
   }
 });
 
@@ -1906,28 +2029,53 @@ function renderVersionMenu() {
       </div>
     `);
   }
-  // Versions (newest first)
-  const versions = [...fileData.versions].reverse();
-  if (versions.length === 0 && !draft) {
-    versionMenu.innerHTML = '<div class="version-menu-empty">아직 저장된 버전이 없습니다.<br>편집 후 📌 버전 저장을 눌러보세요.</div>';
-    return;
+
+  // 형제 버전 (manifest 기반, 최신부터). manifest 없으면 fileData.versions로 폴백.
+  if (siblingVersions && siblingVersions.length) {
+    const list = [...siblingVersions].reverse();
+    list.forEach(s => {
+      const isSelf = s.id === fileData.current;
+      const active = isSelf && !currentViewVersion && !draft;
+      const rel = formatRelative(s.timestamp);
+      const memo = s.memo ? `<div class="v-memo">— ${escapeHTML(s.memo)}</div>` : '';
+      items.push(`
+        <div class="version-menu-item ${active ? 'active' : ''}" data-target="sibling:${s.file}" data-self="${isSelf ? '1' : '0'}">
+          <div class="v-title">${s.id}${isSelf ? ' · 현재' : ''}</div>
+          <div class="v-sub">${rel}</div>
+          ${memo}
+        </div>
+      `);
+    });
+  } else {
+    // Fallback: 자기 파일 versions[]만 노출 (manifest fetch 실패 시)
+    const versions = [...fileData.versions].reverse();
+    if (versions.length === 0 && !draft) {
+      versionMenu.innerHTML = '<div class="version-menu-empty">아직 저장된 버전이 없습니다.<br>편집 후 📌 버전 저장을 눌러보세요.</div>';
+      return;
+    }
+    versions.forEach(v => {
+      const active = (currentViewVersion === v.id) || (!currentViewVersion && !draft && v.id === fileData.current);
+      const rel = formatRelative(v.timestamp);
+      const memo = v.memo ? `<div class="v-memo">— ${escapeHTML(v.memo)}</div>` : '';
+      items.push(`
+        <div class="version-menu-item ${active ? 'active' : ''}" data-target="${v.id}">
+          <div class="v-title">${v.id}${v.id === fileData.current ? ' · 최신' : ''}</div>
+          <div class="v-sub">${rel} · ${authorLabel(v.author)}</div>
+          ${memo}
+        </div>
+      `);
+    });
   }
-  versions.forEach(v => {
-    const active = (currentViewVersion === v.id) || (!currentViewVersion && !draft && v.id === fileData.current);
-    const rel = formatRelative(v.timestamp);
-    const memo = v.memo ? `<div class="v-memo">— ${escapeHTML(v.memo)}</div>` : '';
-    items.push(`
-      <div class="version-menu-item ${active ? 'active' : ''}" data-target="${v.id}">
-        <div class="v-title">${v.id}${v.id === fileData.current ? ' · 최신' : ''}</div>
-        <div class="v-sub">${rel} · ${authorLabel(v.author)}</div>
-        ${memo}
-      </div>
-    `);
-  });
+
   versionMenu.innerHTML = items.join('');
   versionMenu.querySelectorAll('.version-menu-item').forEach(el => {
     el.addEventListener('click', () => {
       const target = el.dataset.target;
+      if (target.startsWith('sibling:')) {
+        if (el.dataset.self === '1') { versionMenu.style.display = 'none'; return; }
+        location.href = target.substring('sibling:'.length);
+        return;
+      }
       switchToVersion(target);
       versionMenu.style.display = 'none';
     });
@@ -1935,7 +2083,7 @@ function renderVersionMenu() {
 }
 
 function switchToVersion(target) {
-  closePanel();
+  currentPinId = null;
   if (target === 'draft') {
     currentViewVersion = null;
   } else {
@@ -1950,6 +2098,7 @@ function switchToVersion(target) {
   document.body.classList.toggle('readonly-view', isReadOnlyView());
   renderVersionLabel();
   renderAllPins();
+  renderPanel();
   updateCompareToggleAvailability();
   if (compareMode) applyDiffVisuals();
   updateSaveIndicator();
@@ -2089,6 +2238,7 @@ function commitNewVersion({ type, memo, author }) {
   currentViewVersion = null;
   renderVersionLabel();
   renderAllPins();
+  renderPanel();
   updateCompareToggleAvailability();
   flashSaveIndicator('version-saved', `📌 ${newId} 저장됨`);
 }
@@ -2109,9 +2259,11 @@ document.getElementById('reset-cancel').addEventListener('click', () => {
 });
 document.getElementById('reset-confirm').addEventListener('click', () => {
   clearDraft();
+  currentPinId = null;
+  expandedPins.clear();
   renderVersionLabel();
   renderAllPins();
-  closePanel();
+  renderPanel();
   updateCompareToggleAvailability();
   resetDialog.classList.remove('open');
 });
@@ -2131,6 +2283,7 @@ document.getElementById('conflict-discard').addEventListener('click', () => {
   clearDraft();
   conflictDialog.classList.remove('open');
   renderAllPins();
+  renderPanel();
   renderVersionLabel();
   updateSaveIndicator();
 });
@@ -2152,6 +2305,7 @@ document.getElementById('draft-discard').addEventListener('click', () => {
   clearDraft();
   draftDialog.classList.remove('open');
   renderAllPins();
+  renderPanel();
   renderVersionLabel();
   updateSaveIndicator();
   updateCompareToggleAvailability();
@@ -2160,6 +2314,7 @@ document.getElementById('draft-restore').addEventListener('click', () => {
   draftDialog.classList.remove('open');
   setDirty(true);
   renderAllPins();
+  renderPanel();
   renderVersionLabel();
   updateCompareToggleAvailability();
 });
@@ -2227,6 +2382,7 @@ function bootstrap() {
 
   renderVersionLabel();
   renderAllPins();
+  renderPanel();
   updateCompareToggleAvailability();
   updateSaveIndicator();
 }

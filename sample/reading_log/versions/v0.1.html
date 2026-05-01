@@ -813,15 +813,73 @@
 
       <div class="page-header">
         <div>
-          <h1 class="page-title">페이지 제목</h1>
-          <p class="page-subtitle">페이지에 대한 간단한 설명.</p>
+          <h1 class="page-title">📚 독서 기록표</h1>
+          <p class="page-subtitle">읽은 책과 한줄 소감을 남겨보세요.</p>
+        </div>
+        <div data-component="stats-badge" style="display:flex; gap:8px; align-items:center;">
+          <span style="padding:6px 12px; background:var(--primary-soft); color:var(--primary); border-radius:20px; font-size:12px; font-weight:600;">총 12권</span>
+          <span style="padding:6px 12px; background:var(--surface-alt); color:var(--text-sub); border-radius:20px; font-size:12px; font-weight:600;">이번 달 3권</span>
         </div>
       </div>
 
-      <div class="placeholder-area" data-component="example-placeholder">
-        <h2>여기에 와이어프레임을 작성하세요</h2>
-        <p>컴포넌트에 <code>data-component="고유이름"</code>을 달면 핀을 붙일 수 있습니다.</p>
-        <p style="margin-top:12px;">URL 끝에 <code>?edit=1</code>을 붙이면 편집 모드가 활성화됩니다.</p>
+      <section data-component="add-book-form" style="background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:20px; margin-bottom:20px;">
+        <h2 style="font-size:14px; font-weight:700; margin-bottom:12px;">+ 새 책 기록</h2>
+        <div style="display:grid; grid-template-columns: 1fr 1fr 140px; gap:8px; margin-bottom:8px;">
+          <input placeholder="책 제목" style="padding:8px 10px; border:1px solid var(--border-strong); border-radius:6px; font-family:inherit; font-size:13px;" />
+          <input placeholder="저자" style="padding:8px 10px; border:1px solid var(--border-strong); border-radius:6px; font-family:inherit; font-size:13px;" />
+          <select data-component="status-select" style="padding:8px 10px; border:1px solid var(--border-strong); border-radius:6px; font-family:inherit; font-size:13px;">
+            <option>읽는 중</option>
+            <option>완독</option>
+          </select>
+        </div>
+        <textarea placeholder="한줄 소감 (선택)" rows="2" style="width:100%; padding:8px 10px; border:1px solid var(--border-strong); border-radius:6px; font-family:inherit; font-size:13px; resize:vertical; margin-bottom:8px;"></textarea>
+        <button style="background:var(--primary); color:#fff; border:none; padding:8px 16px; border-radius:6px; font-family:inherit; font-size:13px; font-weight:600; cursor:pointer;">등록</button>
+      </section>
+
+      <div data-component="filter-tabs" style="display:flex; gap:4px; margin-bottom:12px; border-bottom:1px solid var(--border);">
+        <button style="padding:8px 16px; background:none; border:none; border-bottom:2px solid var(--primary); color:var(--primary); font-weight:600; font-size:13px; font-family:inherit; cursor:pointer;">전체 (12)</button>
+        <button style="padding:8px 16px; background:none; border:none; border-bottom:2px solid transparent; color:var(--text-sub); font-weight:500; font-size:13px; font-family:inherit; cursor:pointer;">읽는 중 (3)</button>
+        <button style="padding:8px 16px; background:none; border:none; border-bottom:2px solid transparent; color:var(--text-sub); font-weight:500; font-size:13px; font-family:inherit; cursor:pointer;">완독 (9)</button>
+      </div>
+
+      <div data-component="book-list" style="display:grid; gap:10px;">
+        <article data-component="book-card" style="background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:16px; display:grid; grid-template-columns: 60px 1fr auto; gap:14px; align-items:start;">
+          <span style="padding:4px 8px; background:#d1fae5; color:#065f46; border-radius:4px; font-size:11px; font-weight:600; text-align:center;">완독</span>
+          <div>
+            <h3 style="font-size:14px; font-weight:700; margin-bottom:2px;">데미안</h3>
+            <p style="color:var(--text-sub); font-size:12px; margin-bottom:6px;">헤르만 헤세</p>
+            <p style="font-size:13px; color:var(--text); line-height:1.5;">새는 알에서 나오려고 투쟁한다.</p>
+            <p style="font-size:11px; color:var(--text-muted); margin-top:6px;">2026-03-10 등록</p>
+          </div>
+          <button data-component="book-delete-btn" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:16px; padding:4px;">🗑</button>
+        </article>
+
+        <article style="background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:16px; display:grid; grid-template-columns: 60px 1fr auto; gap:14px; align-items:start;">
+          <span style="padding:4px 8px; background:#fef3c7; color:#92400e; border-radius:4px; font-size:11px; font-weight:600; text-align:center;">읽는 중</span>
+          <div>
+            <h3 style="font-size:14px; font-weight:700; margin-bottom:2px;">사피엔스</h3>
+            <p style="color:var(--text-sub); font-size:12px; margin-bottom:6px;">유발 하라리</p>
+            <p style="font-size:13px; color:var(--text-muted); line-height:1.5;">— 아직 소감 없음</p>
+            <p style="font-size:11px; color:var(--text-muted); margin-top:6px;">2026-04-02 등록</p>
+          </div>
+          <button style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:16px; padding:4px;">🗑</button>
+        </article>
+
+        <article style="background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:16px; display:grid; grid-template-columns: 60px 1fr auto; gap:14px; align-items:start;">
+          <span style="padding:4px 8px; background:#d1fae5; color:#065f46; border-radius:4px; font-size:11px; font-weight:600; text-align:center;">완독</span>
+          <div>
+            <h3 style="font-size:14px; font-weight:700; margin-bottom:2px;">아몬드</h3>
+            <p style="color:var(--text-sub); font-size:12px; margin-bottom:6px;">손원평</p>
+            <p style="font-size:13px; color:var(--text); line-height:1.5;">감정을 배워가는 주인공의 성장이 인상적.</p>
+            <p style="font-size:11px; color:var(--text-muted); margin-top:6px;">2026-02-18 등록</p>
+          </div>
+          <button style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:16px; padding:4px;">🗑</button>
+        </article>
+      </div>
+
+      <div data-component="empty-state" style="display:none; background:var(--surface); border:2px dashed var(--border-strong); border-radius:12px; padding:40px; text-align:center; color:var(--text-sub);">
+        <p style="font-size:14px; font-weight:600; color:var(--text); margin-bottom:6px;">아직 기록된 책이 없어요</p>
+        <p style="font-size:12px;">위 폼에서 첫 책을 등록해 보세요.</p>
       </div>
 
       <!-- @ANCHOR:CONTENT:END ========================================= -->
@@ -960,9 +1018,128 @@
      =========================================================== -->
 <script type="application/json" id="spec-data">
 {
-  "versions": [],
-  "current": null,
-  "nextId": 1
+  "versions": [
+    {
+      "id": "v0.1",
+      "timestamp": "2026-04-18T14:00:00.000Z",
+      "author": "claude",
+      "memo": "초기 기획 (MVP) — 핀 7개",
+      "specs": {
+        "1": {
+          "title": "상단 통계 뱃지",
+          "component": "stats-badge",
+          "position": { "x": 8, "y": 8 },
+          "role": "지금까지 쌓은 독서 기록 총량을 상단에서 즉시 확인할 수 있게 한다.",
+          "states": [
+            "총 권수는 삭제된 책을 제외한 전체 기록 수",
+            "'이번 달'은 등록일 기준 당월 건만 카운트"
+          ],
+          "props": [
+            ["총 권수", "숫자 (삭제된 책 제외)"],
+            ["이번 달", "숫자 (당월 등록 건만)"],
+            ["갱신 시점", "책 등록/삭제 시 자동 반영"]
+          ],
+          "confluence": ""
+        },
+        "2": {
+          "title": "책 추가 폼",
+          "component": "add-book-form",
+          "position": { "x": 8, "y": 8 },
+          "role": "사용자가 새 독서 기록을 등록하는 단일 진입점. MVP에서는 이 폼이 유일한 입력 수단이다.",
+          "states": [
+            "제목이 비어있으면 등록 시 에러 표시",
+            "등록 성공 시 폼 초기화 + 리스트 상단에 카드 추가",
+            "'등록' 버튼은 항상 활성"
+          ],
+          "props": [
+            ["필수 입력", "제목"],
+            ["선택 입력", "저자, 한줄 소감"],
+            ["기본 상태", "읽는 중"]
+          ],
+          "confluence": ""
+        },
+        "3": {
+          "title": "독서 상태 드롭다운",
+          "component": "status-select",
+          "position": { "x": 8, "y": 8 },
+          "role": "책이 현재 읽는 중인지 완독인지 구분. 필터·카드 뱃지 색상의 근거가 된다.",
+          "states": [
+            "기본값: 읽는 중",
+            "옵션: 읽는 중 / 완독"
+          ],
+          "props": [
+            ["선택지", "읽는 중, 완독"],
+            ["확장 여지", "향후 '읽고 싶음'(관심 도서) 추가 고려"]
+          ],
+          "confluence": ""
+        },
+        "4": {
+          "title": "상태 필터 탭",
+          "component": "filter-tabs",
+          "position": { "x": 8, "y": 8 },
+          "role": "책이 많이 쌓였을 때 '읽는 중'과 '완독'을 분리해서 볼 수 있게 한다.",
+          "states": [
+            "기본 선택: 전체",
+            "탭 괄호 안 숫자는 해당 상태의 책 수",
+            "선택 탭은 하단 파란 밑줄로 표시"
+          ],
+          "props": [
+            ["탭 구성", "전체 / 읽는 중 / 완독"],
+            ["카운트 동기화", "책 등록·삭제 시 자동 갱신"]
+          ],
+          "confluence": ""
+        },
+        "5": {
+          "title": "책 리스트",
+          "component": "book-list",
+          "position": { "x": 8, "y": 8 },
+          "role": "기록된 책 전체를 카드 형태로 보여준다. 최신 등록 순.",
+          "states": [
+            "필터 선택에 따라 표시되는 카드 변경",
+            "기록이 없으면 '빈 상태' 영역 노출"
+          ],
+          "props": [
+            ["정렬", "등록일 내림차순"],
+            ["레이아웃", "세로 카드 스택"]
+          ],
+          "confluence": ""
+        },
+        "6": {
+          "title": "책 카드",
+          "component": "book-card",
+          "position": { "x": 8, "y": 8 },
+          "role": "한 권의 독서 기록을 한 줄 요약으로 표시한다.",
+          "states": [
+            "상태 뱃지 색: 완독 = 초록, 읽는 중 = 노랑",
+            "한줄 소감이 비면 '— 아직 소감 없음' 노출"
+          ],
+          "props": [
+            ["표시 필드", "상태 · 제목 · 저자 · 한줄 소감 · 등록일"],
+            ["액션", "삭제 버튼"]
+          ],
+          "confluence": ""
+        },
+        "7": {
+          "title": "카드 삭제 버튼",
+          "component": "book-delete-btn",
+          "position": { "x": 4, "y": 4 },
+          "role": "잘못 등록했거나 더 이상 남기고 싶지 않은 책을 제거한다. MVP에서는 복구 없음.",
+          "states": [
+            "클릭 시 확인 모달 노출 → 확정 시 삭제",
+            "삭제된 책은 통계·리스트에서 즉시 제외"
+          ],
+          "props": [
+            ["확인 절차", "모달로 한 번 더 확인"],
+            ["복구", "없음 (MVP)"]
+          ],
+          "confluence": ""
+        }
+      },
+      "changes": []
+    }
+  ],
+  "current": "v0.1",
+  "nextId": 8
 }
 </script>
 <!-- @ANCHOR:DATA:END ================================================ -->
@@ -972,8 +1149,8 @@
    ⚙️ TEMPLATE_CONFIG — 기획서마다 이 블록만 수정하세요
    =========================================================== */
 const TEMPLATE_CONFIG = {
-  PAGE_TITLE:  '화면 설계 템플릿',
-  STORAGE_KEY: 'spec_template_base',   // localStorage draft 키 (기획서마다 고유)
+  PAGE_TITLE:  '독서 기록표 v0.1',
+  STORAGE_KEY: 'spec_reading_log_v0_1',   // localStorage draft 키 (기획서마다 고유)
 };
 /* @ANCHOR:CONFIG:END ============================================ */
 
@@ -1004,6 +1181,46 @@ let compareMode = false;
 let currentPinId = null;
 let isEditMode = false;
 let placingPin = false;
+
+/* ============================================================
+   Sibling versions + 직전 버전 baseline (manifest 기반)
+   ============================================================
+   - manifest.json: 형제 버전 목록 → 상단 드롭다운에 노출
+   - 직전 버전 HTML도 fetch해서 specs 추출 → 비교 모드의 baseline
+   - file:// 직접 열기 시 fetch가 막히면 모두 null로 남고 자기 버전만 노출, 비교 모드 비활성.
+   ============================================================ */
+let siblingVersions = null;
+let prevVersionId = null;
+let prevVersionSpecs = null;
+
+fetch('manifest.json')
+  .then(r => r.ok ? r.json() : null)
+  .then(m => {
+    if (!m || !Array.isArray(m.versions)) return;
+    siblingVersions = m.versions;
+    // 자기 직전 버전 식별
+    const myIdx = m.versions.findIndex(v => v.id === fileData.current);
+    if (myIdx > 0) {
+      const prev = m.versions[myIdx - 1];
+      prevVersionId = prev.id;
+      return fetch(prev.file)
+        .then(r => r.ok ? r.text() : null)
+        .then(html => {
+          if (!html) return;
+          const match = html.match(/<script type="application\/json" id="spec-data">([\s\S]*?)<\/script>/);
+          if (!match) return;
+          try {
+            const data = JSON.parse(match[1]);
+            const ver = (data.versions || []).find(v => v.id === prev.id);
+            if (ver && ver.specs) {
+              prevVersionSpecs = ver.specs;
+              updateCompareToggleAvailability();
+            }
+          } catch (e) { console.warn('직전 버전 specs 파싱 실패:', e); }
+        });
+    }
+  })
+  .catch(() => {});
 
 /* ============================================================
    URL param gate
@@ -1227,34 +1444,35 @@ function computeDiffMap(newSpecs, oldSpecs) {
 function getBaselineSpecs() {
   // For compare mode: baseline specs to compare against current view
   if (currentViewVersion) {
-    // Viewing specific version → baseline = version right before it
     const idx = fileData.versions.findIndex(v => v.id === currentViewVersion);
     if (idx > 0) return fileData.versions[idx - 1].specs;
+    // 분리 모델: 자기 파일 안에 직전이 없으면 형제 직전을 사용
+    if (currentViewVersion === fileData.current) return prevVersionSpecs;
     return null;
   }
-  // Live view with draft → baseline = draft's base version (or latest)
   if (draft) {
     const baseId = draft.baseVersion || fileData.current;
     if (!baseId) return null;
     const v = fileData.versions.find(v => v.id === baseId);
     return v ? v.specs : null;
   }
-  // Live view without draft → baseline = prev of latest
+  // Live view: baseline = 자기 파일 안 직전, 없으면 형제 직전 (분리 모델)
   const idx = fileData.versions.findIndex(v => v.id === fileData.current);
   if (idx > 0) return fileData.versions[idx - 1].specs;
-  return null;
+  return prevVersionSpecs;
 }
 
 function getBaselineLabel() {
   if (currentViewVersion) {
     const idx = fileData.versions.findIndex(v => v.id === currentViewVersion);
     if (idx > 0) return fileData.versions[idx - 1].id;
+    if (currentViewVersion === fileData.current) return prevVersionId;
     return null;
   }
   if (draft) return draft.baseVersion || fileData.current;
   const idx = fileData.versions.findIndex(v => v.id === fileData.current);
   if (idx > 0) return fileData.versions[idx - 1].id;
-  return null;
+  return prevVersionId;
 }
 
 function getCurrentLabel() {
@@ -1775,28 +1993,53 @@ function renderVersionMenu() {
       </div>
     `);
   }
-  // Versions (newest first)
-  const versions = [...fileData.versions].reverse();
-  if (versions.length === 0 && !draft) {
-    versionMenu.innerHTML = '<div class="version-menu-empty">아직 저장된 버전이 없습니다.<br>편집 후 📌 버전 저장을 눌러보세요.</div>';
-    return;
+
+  // 형제 버전 (manifest 기반, 최신부터). manifest 없으면 fileData.versions로 폴백.
+  if (siblingVersions && siblingVersions.length) {
+    const list = [...siblingVersions].reverse();
+    list.forEach(s => {
+      const isSelf = s.id === fileData.current;
+      const active = isSelf && !currentViewVersion && !draft;
+      const rel = formatRelative(s.timestamp);
+      const memo = s.memo ? `<div class="v-memo">— ${escapeHTML(s.memo)}</div>` : '';
+      items.push(`
+        <div class="version-menu-item ${active ? 'active' : ''}" data-target="sibling:${s.file}" data-self="${isSelf ? '1' : '0'}">
+          <div class="v-title">${s.id}${isSelf ? ' · 현재' : ''}</div>
+          <div class="v-sub">${rel}</div>
+          ${memo}
+        </div>
+      `);
+    });
+  } else {
+    // Fallback: 자기 파일 versions[]만 노출 (manifest fetch 실패 시)
+    const versions = [...fileData.versions].reverse();
+    if (versions.length === 0 && !draft) {
+      versionMenu.innerHTML = '<div class="version-menu-empty">아직 저장된 버전이 없습니다.<br>편집 후 📌 버전 저장을 눌러보세요.</div>';
+      return;
+    }
+    versions.forEach(v => {
+      const active = (currentViewVersion === v.id) || (!currentViewVersion && !draft && v.id === fileData.current);
+      const rel = formatRelative(v.timestamp);
+      const memo = v.memo ? `<div class="v-memo">— ${escapeHTML(v.memo)}</div>` : '';
+      items.push(`
+        <div class="version-menu-item ${active ? 'active' : ''}" data-target="${v.id}">
+          <div class="v-title">${v.id}${v.id === fileData.current ? ' · 최신' : ''}</div>
+          <div class="v-sub">${rel} · ${authorLabel(v.author)}</div>
+          ${memo}
+        </div>
+      `);
+    });
   }
-  versions.forEach(v => {
-    const active = (currentViewVersion === v.id) || (!currentViewVersion && !draft && v.id === fileData.current);
-    const rel = formatRelative(v.timestamp);
-    const memo = v.memo ? `<div class="v-memo">— ${escapeHTML(v.memo)}</div>` : '';
-    items.push(`
-      <div class="version-menu-item ${active ? 'active' : ''}" data-target="${v.id}">
-        <div class="v-title">${v.id}${v.id === fileData.current ? ' · 최신' : ''}</div>
-        <div class="v-sub">${rel} · ${authorLabel(v.author)}</div>
-        ${memo}
-      </div>
-    `);
-  });
+
   versionMenu.innerHTML = items.join('');
   versionMenu.querySelectorAll('.version-menu-item').forEach(el => {
     el.addEventListener('click', () => {
       const target = el.dataset.target;
+      if (target.startsWith('sibling:')) {
+        if (el.dataset.self === '1') { versionMenu.style.display = 'none'; return; }
+        location.href = target.substring('sibling:'.length);
+        return;
+      }
       switchToVersion(target);
       versionMenu.style.display = 'none';
     });

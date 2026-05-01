@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>독서 기록표 — 버전 히스토리</title>
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
+<style>
+  :root {
+    --bg: #f7f8fa;
+    --surface: #ffffff;
+    --surface-alt: #fafbfc;
+    --border: #e5e7eb;
+    --border-strong: #d1d5db;
+    --text: #111827;
+    --text-sub: #6b7280;
+    --text-muted: #9ca3af;
+    --primary: #2563eb;
+    --primary-hover: #1d4ed8;
+    --primary-soft: #eff6ff;
+    --latest: #10b981;
+    --latest-soft: #d1fae5;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Pretendard Variable', Pretendard, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+  }
+  .wrap {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 48px 24px 96px;
+  }
+  .page-head { margin-bottom: 32px; }
+  .page-eyebrow {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .page-title {
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: 6px;
+  }
+  .page-subtitle {
+    font-size: 14px;
+    color: var(--text-sub);
+  }
+
+  .versions-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .version-card {
+    display: block;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 20px;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
+  }
+  .version-card:hover {
+    border-color: var(--primary);
+    box-shadow: 0 4px 16px rgba(37, 99, 235, 0.08);
+    transform: translateY(-1px);
+  }
+  .version-row {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 6px;
+  }
+  .version-id {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .version-tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+  .version-tag.latest {
+    background: var(--latest-soft);
+    color: #065f46;
+  }
+  .version-meta {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-left: auto;
+  }
+  .version-memo {
+    font-size: 14px;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+  .version-stats {
+    display: flex;
+    gap: 14px;
+    font-size: 12px;
+    color: var(--text-sub);
+  }
+  .version-stats .sep { color: var(--text-muted); }
+  .version-stats b {
+    color: var(--text);
+    font-weight: 700;
+  }
+
+  .footer-note {
+    margin-top: 28px;
+    padding: 14px 16px;
+    background: var(--surface-alt);
+    border: 1px dashed var(--border-strong);
+    border-radius: 10px;
+    font-size: 12px;
+    color: var(--text-sub);
+    line-height: 1.7;
+  }
+  .footer-note b { color: var(--text); }
+  .footer-note code {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-size: 11px;
+    color: var(--primary);
+    font-weight: 600;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="page-head">
+    <div class="page-eyebrow">기획서 히스토리</div>
+    <h1 class="page-title">📚 독서 기록표</h1>
+    <p class="page-subtitle">버전별로 진화한 화면 설계 스냅샷입니다. 카드를 눌러 해당 버전을 여세요.</p>
+  </header>
+
+  <!-- ============================================================
+       버전 카드 리스트 (수동 갱신)
+       새 버전 추가 시 카드 한 개를 위에 끼워 넣으세요.
+       최신이 위에, 과거가 아래.
+       ============================================================ -->
+  <div class="versions-list">
+
+    <a class="version-card" href="versions/v0.2.html">
+      <div class="version-row">
+        <span class="version-id">v0.2</span>
+        <span class="version-tag latest">최신</span>
+        <span class="version-meta">2026-05-01</span>
+      </div>
+      <div class="version-memo">상단 통계 카드 섹션 추가</div>
+      <div class="version-stats">
+        <span>핀 <b>8</b>개</span>
+        <span class="sep">·</span>
+        <span>v0.1 대비: 추가 1</span>
+      </div>
+    </a>
+
+    <a class="version-card" href="versions/v0.1.html">
+      <div class="version-row">
+        <span class="version-id">v0.1</span>
+        <span class="version-meta">2026-04-18</span>
+      </div>
+      <div class="version-memo">초기 기획 (MVP)</div>
+      <div class="version-stats">
+        <span>핀 <b>7</b>개</span>
+      </div>
+    </a>
+
+  </div>
+
+  <div class="footer-note">
+    <b>편집 안내</b> — 이 페이지는 정적 카탈로그입니다. 버전 페이지에서 <code>?edit=1</code>로 켠 편집은 본인 브라우저에만 남고 다른 사람에게는 반영되지 않습니다.<br><br>
+    <b>새 버전 공유 절차</b>:
+    <ol style="margin:6px 0 0 18px; padding:0;">
+      <li>로컬에서 가장 최근 버전 파일을 <code>?edit=1</code>로 열고 편집 → <b>📌 버전 저장</b>으로 다음 버전 HTML 다운로드</li>
+      <li>다운로드 파일을 <code>versions/v0.X.html</code>로 이름 변경해 폴더에 추가</li>
+      <li><code>versions/manifest.json</code>에 새 버전 항목 추가 (id / file / memo / timestamp / pinCount)</li>
+      <li>이 인덱스에 카드 한 개 끼워 넣기 (최신을 맨 위로)</li>
+      <li><code>git commit &amp; push</code> → vercel 자동 재배포</li>
+    </ol>
+  </div>
+
+</div>
+</body>
+</html>

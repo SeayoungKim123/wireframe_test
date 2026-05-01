@@ -1,0 +1,19 @@
+{
+  "versions": [
+    {
+      "id": "v0.1",
+      "file": "v0.1.html",
+      "memo": "초기 기획 (MVP) — 핀 7개",
+      "timestamp": "2026-04-18T14:00:00.000Z",
+      "pinCount": 7
+    },
+    {
+      "id": "v0.2",
+      "file": "v0.2.html",
+      "memo": "상단 통계 카드 섹션 추가",
+      "timestamp": "2026-05-01T05:00:00.000Z",
+      "pinCount": 8
+    }
+  ],
+  "current": "v0.2"
+}
