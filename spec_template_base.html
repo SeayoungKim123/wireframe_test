@@ -371,14 +371,31 @@
     flex-direction: column;
   }
   .spec-panel-header {
-    padding: 14px 20px;
+    padding: 12px 20px;
     border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .spec-panel-header-title {
     font-size: 11px;
     font-weight: 700;
     color: var(--text-muted);
     letter-spacing: 0.05em;
     text-transform: uppercase;
-    flex-shrink: 0;
+  }
+  .spec-panel-header .toggle-group .label {
+    color: var(--text-sub);
+    font-size: 12px;
+    font-weight: 500;
+  }
+  .spec-panel-header .toggle-switch {
+    background: #d1d5db;
+  }
+  .spec-panel-header .toggle-switch.active {
+    background: var(--primary);
   }
   .spec-panel-number {
     display: inline-flex;
@@ -778,11 +795,6 @@
 
   <div class="spacer"></div>
 
-  <div class="toggle-group">
-    <span class="label">스펙 모드</span>
-    <div class="toggle-switch" id="spec-toggle"></div>
-  </div>
-
   <div class="toggle-group" id="edit-toggle-group" style="display: none;">
     <span class="label">편집 모드</span>
     <div class="toggle-switch edit" id="edit-toggle"></div>
@@ -834,7 +846,13 @@
      Spec Side Panel (공용 — 수정하지 않음)
      ============================================================ -->
 <aside class="spec-panel" id="spec-panel">
-  <div class="spec-panel-header">컴포넌트 설명</div>
+  <div class="spec-panel-header">
+    <span class="spec-panel-header-title">컴포넌트 설명</span>
+    <div class="toggle-group">
+      <span class="label" id="spec-toggle-label">번호 표시</span>
+      <div class="toggle-switch active" id="spec-toggle"></div>
+    </div>
+  </div>
   <div class="spec-panel-body" id="panel-body"></div>
 </aside>
 
@@ -1654,12 +1672,22 @@ document.getElementById('delete-pin-confirm').addEventListener('click', () => {
    Mode toggles
    ============================================================ */
 const specToggle = document.getElementById('spec-toggle');
+const specToggleLabel = document.getElementById('spec-toggle-label');
 const editToggle = document.getElementById('edit-toggle');
 const compareToggle = document.getElementById('compare-toggle');
+
+// 번호 표시를 디폴트로 활성화
+document.body.classList.add('spec-mode');
+
+function updateSpecToggleLabel(active) {
+  specToggleLabel.textContent = active ? '번호 표시' : '번호 숨김';
+}
+updateSpecToggleLabel(specToggle.classList.contains('active'));
 
 specToggle.addEventListener('click', () => {
   const active = specToggle.classList.toggle('active');
   document.body.classList.toggle('spec-mode', active);
+  updateSpecToggleLabel(active);
   if (!active && isEditMode) editToggle.click();
 });
 
