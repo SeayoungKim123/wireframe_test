@@ -35,6 +35,7 @@
 
 ## 처리 완료
 
+- **2026-05-04** — 우측 패널 빈 섹션 미노출: 읽기 모드(`?edit=1` 없음)에서 `data.role` / `data.states` / `data.props` / `data.confluence` 중 비어 있는 항목은 섹션 자체를 렌더하지 않음. 편집 모드는 그대로 모두 노출(빈 항목을 채울 진입점 유지). `template/shell.js` + `sample/reading_log/shell.js`의 `renderPinSections()` 양쪽 동기화.
 - **2026-05-01** — 공용 인프라 셸 분리: 본체 HTML 안에 통째로 박혀있던 CSS/JS를 `shell.css`(735줄) + `shell.js`(1,144줄)로 추출. `spec_template_base.html` 본체는 2,142줄 → **271줄**(87% ↓)로 축소. `sample/reading_log/`에도 같은 모델 적용 (v0.1·v0.2 각각 ~80% 축소, 폴더 내 `shell.*` 1벌 공유). 이후 같은 repo 안에서는 셸 한 곳만 수정해도 모든 버전이 함께 갱신됨. 가이드(`template_guide.md`, `template_spec.md`)도 분리 모델 기준으로 업데이트.
 - **2026-05-01** — 번호 표시 토글을 우측 패널 상단으로 이동, 디폴트 ON, 라벨을 상태에 따라 "번호 표시"/"번호 숨김"으로 동적 전환.
 - **2026-05-01** — 스펙 패널 동작 변경: 슬라이드 패널 → 우측 고정 + 핀별 아코디언으로 전환. 핀 클릭 시 해당 항목 자동 펼침 + 스크롤 + 강조. 닫기 버튼 제거, 핀 삭제는 항목 헤더 휴지통으로 이동. (`spec_template_base.html` + `sample/reading_log/versions/*.html` 모두 적용)

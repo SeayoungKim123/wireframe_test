@@ -511,12 +511,19 @@ function renderPanel() {
 
 function renderPinSections(id, data, editable, diff) {
   const fieldHasDiff = (f) => diff?.fields?.includes(f) ? 'diff-field' : '';
-  return `
+  const isBlank = (s) => !s || !String(s).trim();
+  const showRole = editable || !isBlank(data.role);
+  const showStates = editable || (Array.isArray(data.states) && data.states.some(s => !isBlank(s)));
+  const showProps = editable || (Array.isArray(data.props) && data.props.some(([k, v]) => !isBlank(k) || !isBlank(v)));
+  const showConfluence = editable || !isBlank(data.confluence);
+
+  const roleHtml = !showRole ? '' : `
     <div class="spec-section ${fieldHasDiff('역할')}" data-section="role" data-pin="${id}">
       <div class="spec-section-title">역할 <span class="diff-tag">수정됨</span></div>
       <div class="spec-section-content editable" data-field="role" data-pin="${id}" data-placeholder="이 컴포넌트의 역할" contenteditable="${editable}">${escapeHTML(data.role || '')}</div>
-    </div>
+    </div>`;
 
+  const statesHtml = !showStates ? '' : `
     <div class="spec-section ${fieldHasDiff('상태')}" data-section="states" data-pin="${id}">
       <div class="spec-section-title">상태 / 변형 <span class="diff-tag">수정됨</span></div>
       <ul class="spec-list">
@@ -528,8 +535,9 @@ function renderPinSections(id, data, editable, diff) {
         `).join('')}
       </ul>
       <button class="add-item-btn" data-add="states" data-pin="${id}">+ 상태 추가</button>
-    </div>
+    </div>`;
 
+  const propsHtml = !showProps ? '' : `
     <div class="spec-section ${fieldHasDiff('속성')}" data-section="props" data-pin="${id}">
       <div class="spec-section-title">주요 속성 <span class="diff-tag">수정됨</span></div>
       <div>
@@ -542,8 +550,9 @@ function renderPinSections(id, data, editable, diff) {
         `).join('')}
       </div>
       <button class="add-item-btn" data-add="props" data-pin="${id}">+ 속성 추가</button>
-    </div>
+    </div>`;
 
+  const confluenceHtml = !showConfluence ? '' : `
     <div class="spec-section ${fieldHasDiff('Confluence')}" data-section="confluence" data-pin="${id}">
       <div class="spec-section-title">자세한 정책 <span class="diff-tag">수정됨</span></div>
       <div class="spec-confluence-link">
@@ -552,8 +561,9 @@ function renderPinSections(id, data, editable, diff) {
           <path d="M7 17L17 7M7 7h10v10"/>
         </svg>
       </div>
-    </div>
-  `;
+    </div>`;
+
+  return `${roleHtml}${statesHtml}${propsHtml}${confluenceHtml}`;
 }
 
 function bindPanelEvents() {
